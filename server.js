@@ -27,9 +27,9 @@ if (process.env.RAILWAY_PUBLIC_DOMAIN) {
 }
 
 /* ===== Base URL ===== */
-var BASE_URL = process.env.RAILWAY_PUBLIC_DOMAIN
-  ? "https://" + process.env.RAILWAY_PUBLIC_DOMAIN
-  : "http://localhost:" + PORT;
+var BASE_URL = process.env.SITE_URL
+  || (process.env.RAILWAY_PUBLIC_DOMAIN ? "https://" + process.env.RAILWAY_PUBLIC_DOMAIN : "")
+  || "http://localhost:" + PORT;
 
 /* ===== Passport ===== */
 app.use(passport.initialize());
