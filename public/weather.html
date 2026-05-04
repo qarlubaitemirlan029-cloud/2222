@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Погода — CineVerse</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#e8b84b" />
+    <style>
+      .weather-hero {
+        padding: 60px 0 40px;
+        text-align: center;
+      }
+
+      .weather-hero h1 {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        margin-bottom: 12px;
+      }
+
+      .weather-hero p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-bottom: 36px;
+      }
+
+      .search-bar {
+        display: flex;
+        gap: 12px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .search-bar input {
+        flex: 1;
+        font-size: 1rem;
+        padding: 14px 20px;
+      }
+
+      .search-bar button {
+        padding: 14px 28px;
+        white-space: nowrap;
+      }
+
+      .weather-current {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 40px;
+        margin-top: 48px;
+        display: none;
+        text-align: center;
+      }
+
+      .weather-current.show {
+        display: block;
+      }
+
+      .weather-city {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2.4rem;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+      }
+
+      .weather-region {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-bottom: 24px;
+      }
+
+      .weather-main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      .weather-temp {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 5rem;
+        color: var(--gold);
+        letter-spacing: 3px;
+        line-height: 1;
+      }
+
+      .weather-icon {
+        font-size: 4rem;
+      }
+
+      .weather-desc {
+        font-size: 1.1rem;
+        color: var(--muted);
+        margin-bottom: 32px;
+        text-transform: capitalize;
+      }
+
+      .weather-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .weather-detail {
+        background: var(--bg3);
+        border-radius: 10px;
+        padding: 16px;
+        text-align: center;
+      }
+
+      .weather-detail-icon {
+        font-size: 1.4rem;
+        margin-bottom: 6px;
+      }
+
+      .weather-detail-val {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.4rem;
+        color: var(--gold);
+        letter-spacing: 1px;
+      }
+
+      .weather-detail-label {
+        font-size: 0.72rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 2px;
+      }
+
+      .forecast-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+        margin-top: 48px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .forecast-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .forecast-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s;
+      }
+
+      .forecast-card:hover {
+        border-color: rgba(232, 184, 75, 0.3);
+        transform: translateY(-3px);
+      }
+
+      .forecast-date {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .forecast-icon {
+        font-size: 2rem;
+        margin-bottom: 8px;
+      }
+
+      .forecast-temps {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.3rem;
+        letter-spacing: 1px;
+      }
+
+      .forecast-max {
+        color: var(--gold);
+      }
+
+      .forecast-min {
+        color: var(--muted);
+      }
+
+      .loading-spinner {
+        display: flex;
+        justify-content: center;
+        padding: 60px;
+      }
+
+      .spinner {
+        width: 36px;
+        height: 36px;
+        border: 3px solid var(--border);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .status-text {
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--muted);
+      }
+
+      .status-text .icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+      }
+
+      @media (max-width: 768px) {
+        .forecast-grid {
+          grid-template-columns: 1fr;
+        }
+        .weather-details {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-logo">CINE<span>VERSE</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="kinopoisk.html">Кинопоиск</a></li>
+        <li><a href="minigames.html">Игры</a></li>
+        <li><a href="music.html">Музыка</a></li>
+        <li><a href="news.html">Новости</a></li>
+        <li><a href="weather.html" class="active">Погода</a></li>
+        <li><a href="anime.html">Аниме</a></li>
+        <li><a href="about.html">О проекте</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle"></button>
+      <button class="burger" id="burger" onclick="document.getElementById('burger').classList.toggle('active');document.querySelector('.nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
+      <div class="nav-auth" id="nav-auth"></div>
+    </nav>
+
+    <div id="auth-modal" class="modal-overlay">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 id="modal-title"></h2>
+        <p id="modal-sub"></p>
+        <div id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+      </div>
+    </div>
+
+    <main>
+      <section class="weather-hero section">
+        <div class="container">
+          <span class="tag tag-gold" style="margin-bottom:16px;display:inline-block">wttr.in</span>
+          <h1>ПРОГНОЗ <span class="gold">ПОГОДЫ</span></h1>
+          <p>Введи город и узнай погоду на 3 дня</p>
+          <div class="search-bar">
+            <input type="text" id="city-input" placeholder="Введи название города..." onkeydown="if(event.key==='Enter')searchWeather()" />
+            <button class="btn btn-gold" onclick="searchWeather()">Узнать</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" style="padding-top:0">
+        <div class="container">
+          <div id="weather-result">
+            <div class="status-text">
+              <div class="icon">🌤️</div>
+              <p>Введи город и нажми «Узнать»</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>&copy; 2025 CineVerse</div>
+      <div style="display:flex;gap:20px">
+        <a href="kinopoisk.html">Кинопоиск</a>
+        <a href="minigames.html">Игры</a>
+        <a href="weather.html">Погода</a>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+      var weatherIcons = {
+        "113": "☀️", "116": "⛅", "119": "☁️", "122": "☁️",
+        "143": "🌫️", "176": "🌦️", "179": "🌨️", "182": "🌧️",
+        "185": "🌧️", "200": "⛈️", "227": "🌨️", "230": "❄️",
+        "248": "🌫️", "260": "🌫️", "263": "🌦️", "266": "🌦️",
+        "281": "🌧️", "284": "🌧️", "293": "🌦️", "296": "🌧️",
+        "299": "🌧️", "302": "🌧️", "305": "🌧️", "308": "🌧️",
+        "311": "🌧️", "314": "🌧️", "317": "🌨️", "320": "🌨️",
+        "323": "🌨️", "326": "🌨️", "329": "❄️", "332": "❄️",
+        "335": "❄️", "338": "❄️", "350": "🌧️", "353": "🌦️",
+        "356": "🌧️", "359": "🌧️", "362": "🌨️", "365": "🌨️",
+        "368": "🌨️", "371": "❄️", "374": "🌧️", "377": "🌧️",
+        "386": "⛈️", "389": "⛈️", "392": "⛈️", "395": "❄️"
+      };
+
+      function getWeatherIcon(code) {
+        return weatherIcons[code] || "🌡️";
+      }
+
+      function searchWeather() {
+        var city = document.getElementById("city-input").value.trim();
+        if (!city) return;
+
+        var container = document.getElementById("weather-result");
+        container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+
+        fetch("https://wttr.in/" + encodeURIComponent(city) + "?format=j1&lang=ru")
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            if (!data.current_condition || !data.current_condition.length) {
+              container.innerHTML = '<div class="status-text"><div class="icon">😕</div><p>Город не найден</p></div>';
+              return;
+            }
+
+            var cur = data.current_condition[0];
+            var area = data.nearest_area ? data.nearest_area[0] : null;
+            var cityName = area ? (area.areaName[0].value || city) : city;
+            var region = area ? [area.region[0].value, area.country[0].value].filter(Boolean).join(", ") : "";
+            var desc = cur.lang_ru && cur.lang_ru[0] ? cur.lang_ru[0].value : cur.weatherDesc[0].value;
+            var icon = getWeatherIcon(cur.weatherCode);
+
+            var html = '<div class="weather-current show fade-up">' +
+              '<div class="weather-city">' + cityName.toUpperCase() + '</div>' +
+              '<div class="weather-region">' + region + '</div>' +
+              '<div class="weather-main">' +
+                '<span class="weather-icon">' + icon + '</span>' +
+                '<span class="weather-temp">' + cur.temp_C + '°C</span>' +
+              '</div>' +
+              '<div class="weather-desc">' + desc + '</div>' +
+              '<div class="weather-details">' +
+                '<div class="weather-detail"><div class="weather-detail-icon">🌡️</div><div class="weather-detail-val">' + cur.FeelsLikeC + '°C</div><div class="weather-detail-label">Ощущается</div></div>' +
+                '<div class="weather-detail"><div class="weather-detail-icon">💧</div><div class="weather-detail-val">' + cur.humidity + '%</div><div class="weather-detail-label">Влажность</div></div>' +
+                '<div class="weather-detail"><div class="weather-detail-icon">💨</div><div class="weather-detail-val">' + cur.windspeedKmph + ' км/ч</div><div class="weather-detail-label">Ветер</div></div>' +
+                '<div class="weather-detail"><div class="weather-detail-icon">👁️</div><div class="weather-detail-val">' + cur.visibility + ' км</div><div class="weather-detail-label">Видимость</div></div>' +
+                '<div class="weather-detail"><div class="weather-detail-icon">🧭</div><div class="weather-detail-val">' + cur.pressure + ' мб</div><div class="weather-detail-label">Давление</div></div>' +
+              '</div>' +
+            '</div>';
+
+            if (data.weather && data.weather.length) {
+              html += '<div class="forecast-title">ПРОГНОЗ НА <span class="gold">3 ДНЯ</span></div>';
+              html += '<div class="forecast-grid">';
+              data.weather.forEach(function(day) {
+                var dayDate = new Date(day.date);
+                var dateStr = dayDate.toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "short" });
+                var dayIcon = getWeatherIcon(day.hourly[4].weatherCode);
+                html += '<div class="forecast-card fade-up">' +
+                  '<div class="forecast-date">' + dateStr + '</div>' +
+                  '<div class="forecast-icon">' + dayIcon + '</div>' +
+                  '<div class="forecast-temps">' +
+                    '<span class="forecast-max">' + day.maxtempC + '°</span>' +
+                    '<span class="forecast-min">' + day.mintempC + '°</span>' +
+                  '</div>' +
+                '</div>';
+              });
+              html += '</div>';
+            }
+
+            container.innerHTML = html;
+          })
+          .catch(function() {
+            container.innerHTML = '<div class="status-text"><div class="icon">⚠️</div><p>Ошибка загрузки. Попробуй ещё раз.</p></div>';
+          });
+      }
+    </script>
+    <button class="scroll-top" id="scroll-top">&uarr;</button>
+    <script src="global.js"></script>
+  </body>
+</html>

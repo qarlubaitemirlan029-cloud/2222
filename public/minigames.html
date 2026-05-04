@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Мини-игры — CineVerse</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#e8b84b" />
+    <style>
+      .games-hero {
+        padding: 60px 0 40px;
+        text-align: center;
+      }
+
+      .games-hero h1 {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        margin-bottom: 12px;
+      }
+
+      .games-hero p {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .games-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 48px;
+      }
+
+      .game-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 28px;
+        transition: all 0.3s;
+        cursor: default;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .game-card:hover {
+        border-color: rgba(232, 184, 75, 0.3);
+        background: rgba(232, 184, 75, 0.03);
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .game-icon {
+        font-size: 2.8rem;
+        margin-bottom: 16px;
+      }
+
+      .game-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+      }
+
+      .game-card p {
+        color: var(--muted);
+        font-size: 0.85rem;
+        line-height: 1.6;
+        flex: 1;
+      }
+
+      .game-play-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 18px;
+        padding: 10px 22px;
+        background: var(--gold);
+        color: #0a0a0f;
+        border: none;
+        border-radius: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s;
+        width: fit-content;
+      }
+
+      .game-play-btn:hover {
+        background: var(--gold2);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(232, 184, 75, 0.25);
+      }
+
+      .game-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(12px);
+        z-index: 200;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .game-modal-overlay.active {
+        display: flex;
+      }
+
+      .game-modal {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 900px;
+        height: 80vh;
+        max-height: 700px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        animation: modalIn 0.3s ease;
+        overflow: hidden;
+      }
+
+      .game-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .game-modal-header h3 {
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .game-modal-close {
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .game-modal-close:hover {
+        border-color: var(--red2);
+        color: var(--red2);
+      }
+
+      .game-modal iframe {
+        flex: 1;
+        width: 100%;
+        border: none;
+        background: #fff;
+        border-radius: 0 0 16px 16px;
+      }
+
+      @media (max-width: 768px) {
+        .games-grid {
+          grid-template-columns: 1fr;
+        }
+        .game-modal {
+          height: 90vh;
+          max-height: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-logo">CINE<span>VERSE</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="kinopoisk.html">Кинопоиск</a></li>
+        <li><a href="minigames.html" class="active">Игры</a></li>
+        <li><a href="music.html">Музыка</a></li>
+        <li><a href="news.html">Новости</a></li>
+        <li><a href="weather.html">Погода</a></li>
+        <li><a href="anime.html">Аниме</a></li>
+        <li><a href="about.html">О проекте</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle"></button>
+      <button class="burger" id="burger" onclick="document.getElementById('burger').classList.toggle('active');document.querySelector('.nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
+      <div class="nav-auth" id="nav-auth"></div>
+    </nav>
+
+    <div id="auth-modal" class="modal-overlay">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 id="modal-title"></h2>
+        <p id="modal-sub"></p>
+        <div id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+      </div>
+    </div>
+
+    <div class="game-modal-overlay" id="game-overlay">
+      <div class="game-modal">
+        <div class="game-modal-header">
+          <h3 id="game-modal-title"></h3>
+          <button class="game-modal-close" onclick="closeGame()">×</button>
+        </div>
+        <iframe id="game-frame" src="" allow="fullscreen"></iframe>
+      </div>
+    </div>
+
+    <main>
+      <section class="games-hero section">
+        <div class="container">
+          <span class="tag tag-gold" style="margin-bottom:16px;display:inline-block">Развлечения</span>
+          <h1>МИНИ-<span class="gold">ИГРЫ</span></h1>
+          <p>Играй прямо в браузере — без скачивания и регистрации</p>
+        </div>
+      </section>
+
+      <section class="section" style="padding-top:0">
+        <div class="container">
+          <div class="games-grid" id="games-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>&copy; 2025 CineVerse</div>
+      <div style="display:flex;gap:20px">
+        <a href="kinopoisk.html">Кинопоиск</a>
+        <a href="minigames.html">Игры</a>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+      const games = [
+        {
+          name: "2048",
+          icon: "🔢",
+          desc: "Соединяй одинаковые числа и доберись до 2048. Простая, но затягивающая головоломка.",
+          url: "https://www.2048game.com/"
+        },
+        {
+          name: "HEXTRIS",
+          icon: "⬡",
+          desc: "Гексагональный тетрис. Ловко вращай фигуру и собирай линии одного цвета.",
+          url: "https://hextris.io/"
+        },
+        {
+          name: "FLOPPY BIRD",
+          icon: "🐦",
+          desc: "Классический клон Flappy Bird. Нажимай чтобы лететь и уворачивайся от труб.",
+          url: "https://nebezb.com/floppybird/"
+        },
+        {
+          name: "ЗМЕЙКА",
+          icon: "🐍",
+          desc: "Та самая змейка с Nokia. Собирай еду, расти и не врезайся в свой хвост.",
+          url: "https://playsnake.org/"
+        },
+        {
+          name: "ТЕТРИС",
+          icon: "🧱",
+          desc: "Культовая игра всех времён. Складывай фигуры и очищай линии.",
+          url: "https://chvin.github.io/react-tetris/"
+        },
+        {
+          name: "PROXX",
+          icon: "💣",
+          desc: "Современный сапёр от команды Google Chrome. Найди все чёрные дыры.",
+          url: "https://proxx.app/"
+        }
+      ];
+
+      function renderGames() {
+        const grid = document.getElementById("games-grid");
+        games.forEach((g, i) => {
+          const card = document.createElement("div");
+          card.className = "game-card fade-up";
+          card.style.animationDelay = (i * 0.08) + "s";
+          card.innerHTML = `
+            <span class="game-icon">${g.icon}</span>
+            <h3>${g.name}</h3>
+            <p>${g.desc}</p>
+            <button class="game-play-btn" onclick="openGame(${i})">Играть →</button>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      function openGame(index) {
+        const g = games[index];
+        document.getElementById("game-modal-title").innerHTML = g.icon + " " + g.name;
+        document.getElementById("game-frame").src = g.url;
+        document.getElementById("game-overlay").classList.add("active");
+      }
+
+      function closeGame() {
+        document.getElementById("game-overlay").classList.remove("active");
+        document.getElementById("game-frame").src = "";
+      }
+
+      document.getElementById("game-overlay").addEventListener("click", function(e) {
+        if (e.target === this) closeGame();
+      });
+
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") closeGame();
+      });
+
+      renderGames();
+    </script>
+    <button class="scroll-top" id="scroll-top">&uarr;</button>
+    <script src="global.js"></script>
+  </body>
+</html>

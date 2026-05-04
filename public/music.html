@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Музыка — CineVerse</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#e8b84b" />
+    <style>
+      .music-hero {
+        padding: 60px 0 40px;
+        text-align: center;
+      }
+
+      .music-hero h1 {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        margin-bottom: 12px;
+      }
+
+      .music-hero p {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .playlists-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+        margin-top: 48px;
+      }
+
+      .playlist-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transition: all 0.3s;
+      }
+
+      .playlist-card:hover {
+        border-color: rgba(232, 184, 75, 0.3);
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .playlist-header {
+        padding: 20px 20px 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .playlist-icon {
+        font-size: 1.8rem;
+      }
+
+      .playlist-header h3 {
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+      }
+
+      .playlist-header p {
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin: 0;
+      }
+
+      .playlist-card iframe {
+        width: 100%;
+        height: 352px;
+        border: none;
+        border-radius: 0 0 12px 12px;
+      }
+
+      @media (max-width: 768px) {
+        .playlists-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-logo">CINE<span>VERSE</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="kinopoisk.html">Кинопоиск</a></li>
+        <li><a href="minigames.html">Игры</a></li>
+        <li><a href="music.html" class="active">Музыка</a></li>
+        <li><a href="news.html">Новости</a></li>
+        <li><a href="weather.html">Погода</a></li>
+        <li><a href="anime.html">Аниме</a></li>
+        <li><a href="about.html">О проекте</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle"></button>
+      <button class="burger" id="burger" onclick="document.getElementById('burger').classList.toggle('active');document.querySelector('.nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
+      <div class="nav-auth" id="nav-auth"></div>
+    </nav>
+
+    <div id="auth-modal" class="modal-overlay">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 id="modal-title"></h2>
+        <p id="modal-sub"></p>
+        <div id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+      </div>
+    </div>
+
+    <main>
+      <section class="music-hero section">
+        <div class="container">
+          <span class="tag tag-gold" style="margin-bottom:16px;display:inline-block">Spotify</span>
+          <h1>СЛУШАЙ <span class="gold">МУЗЫКУ</span></h1>
+          <p>Лучшие плейлисты прямо на сайте — без переключения вкладок</p>
+        </div>
+      </section>
+
+      <section class="section" style="padding-top:0">
+        <div class="container">
+          <div class="playlists-grid">
+            <div class="playlist-card fade-up">
+              <div class="playlist-header">
+                <span class="playlist-icon">🔥</span>
+                <div>
+                  <h3>TOP 50 GLOBAL</h3>
+                  <p>Самые популярные треки мира</p>
+                </div>
+              </div>
+              <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+
+            <div class="playlist-card fade-up" style="animation-delay:0.08s">
+              <div class="playlist-header">
+                <span class="playlist-icon">🇷🇺</span>
+                <div>
+                  <h3>HOT HITS RUSSIA</h3>
+                  <p>Топ треки России</p>
+                </div>
+              </div>
+              <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DX5gQonLbZD9s?theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+
+            <div class="playlist-card fade-up" style="animation-delay:0.16s">
+              <div class="playlist-header">
+                <span class="playlist-icon">🎹</span>
+                <div>
+                  <h3>PEACEFUL PIANO</h3>
+                  <p>Спокойная фортепианная музыка</p>
+                </div>
+              </div>
+              <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DX4sWSpwq3LiO?theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+
+            <div class="playlist-card fade-up" style="animation-delay:0.24s">
+              <div class="playlist-header">
+                <span class="playlist-icon">🎸</span>
+                <div>
+                  <h3>ROCK CLASSICS</h3>
+                  <p>Легендарные рок-хиты</p>
+                </div>
+              </div>
+              <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DWXRqgorJj26U?theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+
+            <div class="playlist-card fade-up" style="animation-delay:0.32s">
+              <div class="playlist-header">
+                <span class="playlist-icon">🎤</span>
+                <div>
+                  <h3>RAP CAVIAR</h3>
+                  <p>Лучший рэп и хип-хоп</p>
+                </div>
+              </div>
+              <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd?theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+
+            <div class="playlist-card fade-up" style="animation-delay:0.4s">
+              <div class="playlist-header">
+                <span class="playlist-icon">🌙</span>
+                <div>
+                  <h3>LO-FI BEATS</h3>
+                  <p>Расслабляющие биты для учёбы</p>
+                </div>
+              </div>
+              <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DWWQRwui0ExPn?theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>&copy; 2025 CineVerse</div>
+      <div style="display:flex;gap:20px">
+        <a href="kinopoisk.html">Кинопоиск</a>
+        <a href="minigames.html">Игры</a>
+        <a href="music.html">Музыка</a>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <button class="scroll-top" id="scroll-top">&uarr;</button>
+    <script src="global.js"></script>
+  </body>
+</html>

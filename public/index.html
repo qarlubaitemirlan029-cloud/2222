@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CineVerse — Твой мир кино</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#e8b84b" />
+    <style>
+      .hero {
+        min-height: calc(100vh - var(--nav-h));
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 100% 80% at 60% 50%,
+            rgba(192, 57, 43, 0.08) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 60% 60% at 10% 80%,
+            rgba(232, 184, 75, 0.06) 0%,
+            transparent 50%
+          );
+      }
+
+      .hero-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(232, 184, 75, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(232, 184, 75, 0.04) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(
+          ellipse at center,
+          black 30%,
+          transparent 80%
+        );
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 700px;
+      }
+
+      .hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        font-size: 0.75rem;
+        color: var(--gold);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+        background: rgba(232, 184, 75, 0.05);
+      }
+
+      .hero-label::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--gold);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      .hero h1 {
+        font-size: clamp(3.5rem, 8vw, 7rem);
+        line-height: 0.95;
+        margin-bottom: 24px;
+      }
+
+      .hero h1 .outline {
+        -webkit-text-stroke: 1px rgba(232, 184, 75, 0.4);
+        color: transparent;
+      }
+
+      .hero-desc {
+        font-size: 1.1rem;
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: 40px;
+        max-width: 520px;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .hero-stats {
+        display: flex;
+        gap: 40px;
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 1px solid var(--border);
+      }
+
+      .stat-num {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2.2rem;
+        color: var(--gold);
+        letter-spacing: 2px;
+      }
+
+      .stat-label {
+        font-size: 0.75rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .hero-visual {
+        position: absolute;
+        right: -40px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 480px;
+        height: 480px;
+        opacity: 0.4;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .feature-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 32px;
+        transition: all 0.3s;
+        cursor: default;
+      }
+
+      .feature-card:hover {
+        border-color: rgba(232, 184, 75, 0.3);
+        background: rgba(232, 184, 75, 0.03);
+        transform: translateY(-4px);
+      }
+
+      .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 16px;
+        display: block;
+      }
+
+      .feature-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+      }
+
+      .feature-card p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .feature-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--gold);
+        font-size: 0.85rem;
+        text-decoration: none;
+        margin-top: 16px;
+        transition: gap 0.2s;
+      }
+
+      .feature-link:hover {
+        gap: 10px;
+      }
+
+      .cta-section {
+        text-align: center;
+        padding: 100px 0;
+      }
+
+      .cta-section h2 {
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        margin-bottom: 16px;
+      }
+
+      .cta-section p {
+        color: var(--muted);
+        font-size: 1rem;
+        margin-bottom: 36px;
+      }
+
+      .section-header {
+        margin-bottom: 48px;
+      }
+
+      .section-header h2 {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        margin-bottom: 8px;
+      }
+
+      .section-header p {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 768px) {
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero-visual {
+          display: none;
+        }
+        .hero-stats {
+          gap: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-logo">CINE<span>VERSE</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Главная</a></li>
+        <li><a href="kinopoisk.html">Кинопоиск</a></li>
+        <li><a href="minigames.html">Игры</a></li>
+        <li><a href="music.html">Музыка</a></li>
+        <li><a href="news.html">Новости</a></li>
+        <li><a href="weather.html">Погода</a></li>
+        <li><a href="anime.html">Аниме</a></li>
+        <li><a href="about.html">О проекте</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle"></button>
+      <button class="burger" id="burger" onclick="document.getElementById('burger').classList.toggle('active');document.querySelector('.nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
+      <div class="nav-auth" id="nav-auth"></div>
+    </nav>
+
+    <div id="auth-modal" class="modal-overlay">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 id="modal-title"></h2>
+        <p id="modal-sub"></p>
+        <div id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+      </div>
+    </div>
+
+    <main>
+      <section class="hero section">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="container">
+          <div class="hero-content fade-up">
+            <div class="hero-label">Добро пожаловать в CineVerse</div>
+            <h1>
+              ТВОЙ МИР <span class="gold">КИНО</span>
+              <span class="outline">ЗДЕСЬ</span>
+            </h1>
+            <p class="hero-desc">
+              Ищи фильмы, узнавай рейтинги, читай описания — всё через Kinopoisk
+              API. Плюс мини-игры, чтобы скоротать время между просмотрами.
+            </p>
+            <div class="hero-actions">
+              <a href="kinopoisk.html" class="btn btn-gold">🎬 Найти фильм</a>
+              <a href="minigames.html" class="btn btn-outline">🎮 Играть</a>
+            </div>
+            <div class="hero-stats">
+              <div>
+                <div class="stat-num">1M+</div>
+                <div class="stat-label">Фильмов в базе</div>
+              </div>
+              <div>
+                <div class="stat-num">4K+</div>
+                <div class="stat-label">Игр онлайн</div>
+              </div>
+              <div>
+                <div class="stat-num">∞</div>
+                <div class="stat-label">Часов контента</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="tag tag-gold">Возможности</span>
+            <h2 style="margin-top: 12px">
+              ЧТО УМЕЕТ <span class="gold">САЙТ</span>
+            </h2>
+            <p>Всё что нужно — в одном месте</p>
+          </div>
+          <div class="features-grid">
+            <div class="feature-card">
+              <span class="feature-icon">🎬</span>
+              <h3>КИНОПОИСК</h3>
+              <p>
+                Поиск фильмов по названию, просмотр рейтингов, описаний и
+                постеров через официальный Kinopoisk API.
+              </p>
+              <a href="kinopoisk.html" class="feature-link">Перейти →</a>
+            </div>
+            <div class="feature-card">
+              <span class="feature-icon">🎮</span>
+              <h3>МИНИ-ИГРЫ</h3>
+              <p>
+                Коллекция браузерных игр прямо на сайте. Тетрис, 2048, змейка и
+                другие — играй без скачивания.
+              </p>
+              <a href="minigames.html" class="feature-link">Перейти →</a>
+            </div>
+            <div class="feature-card">
+              <span class="feature-icon">👤</span>
+              <h3>АККАУНТ</h3>
+              <p>
+                Зарегистрируйся и войди в свой аккаунт. Система авторизации с
+                сохранением данных.
+              </p>
+              <a
+                onclick="openModal()"
+                class="feature-link"
+                style="cursor: pointer"
+                >Войти →</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-section">
+        <div class="container">
+          <span
+            class="tag tag-red"
+            style="margin-bottom: 20px; display: inline-block"
+            >Начни сейчас</span
+          >
+          <h2>ГОТОВ К <span class="gold">ПРОСМОТРУ?</span></h2>
+          <p>Создай аккаунт или сразу ищи фильмы</p>
+          <div
+            style="
+              display: flex;
+              gap: 14px;
+              justify-content: center;
+              flex-wrap: wrap;
+            "
+          >
+            <button class="btn btn-gold" onclick="openModal()">
+              Войти
+            </button>
+            <a href="kinopoisk.html" class="btn btn-outline">Кинопоиск</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>© 2025 CineVerse</div>
+      <div style="display: flex; gap: 20px">
+        <a href="kinopoisk.html">Кинопоиск</a>
+        <a href="minigames.html">Игры</a>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <button class="scroll-top" id="scroll-top">&uarr;</button>
+    <script src="global.js"></script>
+  </body>
+</html>

@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Аниме — CineVerse</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#e8b84b" />
+    <style>
+      .anime-hero {
+        padding: 60px 0 40px;
+        text-align: center;
+      }
+      .anime-hero h1 {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        margin-bottom: 12px;
+      }
+      .anime-hero p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-bottom: 36px;
+      }
+      .search-bar {
+        display: flex;
+        gap: 12px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .search-bar input { flex:1; font-size:1rem; padding:14px 20px; }
+      .search-bar button { padding:14px 28px; white-space:nowrap; }
+      .anime-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 48px;
+      }
+      .anime-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .anime-card:hover {
+        border-color: rgba(232,184,75,0.4);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      }
+      .anime-poster {
+        width: 100%;
+        aspect-ratio: 2/3;
+        object-fit: cover;
+        display: block;
+        background: var(--bg3);
+      }
+      .anime-info { padding: 14px; }
+      .anime-title {
+        font-family: "DM Sans", sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .anime-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      .anime-score {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--gold);
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+      .anime-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(8px);
+        z-index: 200;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .anime-modal-overlay.active { display: flex; }
+      .anime-modal {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        max-width: 700px;
+        width: 100%;
+        display: flex;
+        gap: 28px;
+        padding: 32px;
+        position: relative;
+        animation: modalIn 0.3s ease;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .anime-modal-poster {
+        width: 180px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--bg3);
+      }
+      .anime-modal-poster img { width:100%; display:block; }
+      .anime-modal-details { flex:1; }
+      .anime-modal-details h2 { font-size:1.8rem; margin-bottom:6px; }
+      .anime-modal-details .sub { color:var(--muted); font-size:0.85rem; margin-bottom:16px; }
+      .anime-modal-details .desc { color:var(--muted); font-size:0.85rem; line-height:1.65; margin-top:16px; }
+      .detail-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; font-size:0.85rem; }
+      .detail-row .label { color:var(--muted); min-width:80px; }
+      .genres-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+      .loading-spinner { display:flex; justify-content:center; padding:60px; }
+      .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite; }
+      @keyframes spin { to { transform:rotate(360deg); } }
+      .status-text { text-align:center; padding:80px 20px; color:var(--muted); }
+      .status-text .icon { font-size:3rem; margin-bottom:16px; }
+      .section-label { font-size:0.85rem; color:var(--muted); margin-top:48px; margin-bottom:-32px; text-align:center; }
+      @media (max-width:600px) {
+        .anime-modal { flex-direction:column; }
+        .anime-modal-poster { width:100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-logo">CINE<span>VERSE</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="kinopoisk.html">Кинопоиск</a></li>
+        <li><a href="minigames.html">Игры</a></li>
+        <li><a href="music.html">Музыка</a></li>
+        <li><a href="news.html">Новости</a></li>
+        <li><a href="weather.html">Погода</a></li>
+        <li><a href="anime.html" class="active">Аниме</a></li>
+        <li><a href="about.html">О проекте</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle"></button>
+      <button class="burger" id="burger" onclick="document.getElementById('burger').classList.toggle('active');document.querySelector('.nav-links').classList.toggle('open')"><span></span><span></span><span></span></button>
+      <div class="nav-auth" id="nav-auth"></div>
+    </nav>
+
+    <div id="auth-modal" class="modal-overlay">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 id="modal-title"></h2>
+        <p id="modal-sub"></p>
+        <div id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+      </div>
+    </div>
+
+    <div class="anime-modal-overlay" id="anime-modal">
+      <div class="anime-modal" id="anime-modal-inner">
+        <button class="modal-close" onclick="closeAnimeModal()" style="top:12px;right:12px">×</button>
+      </div>
+    </div>
+
+    <main>
+      <section class="anime-hero section">
+        <div class="container">
+          <span class="tag tag-red" style="margin-bottom:16px;display:inline-block">Jikan API</span>
+          <h1>ПОИСК <span class="gold">АНИМЕ</span></h1>
+          <p>Ищи аниме по названию или смотри топ рейтинга</p>
+          <div class="search-bar">
+            <input type="text" id="anime-input" placeholder="Введи название аниме..." onkeydown="if(event.key==='Enter')searchAnime()" />
+            <button class="btn btn-gold" onclick="searchAnime()">Найти</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" style="padding-top:0">
+        <div class="container">
+          <div id="anime-container">
+            <div class="loading-spinner"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>&copy; 2025 CineVerse</div>
+      <div style="display:flex;gap:20px">
+        <a href="kinopoisk.html">Кинопоиск</a>
+        <a href="anime.html">Аниме</a>
+        <a href="minigames.html">Игры</a>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+      var API = "https://api.jikan.moe/v4";
+
+      function loadTop() {
+        var container = document.getElementById("anime-container");
+        container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+        fetch(API + "/top/anime?limit=20")
+          .then(function(r) { return r.json(); })
+          .then(function(d) { renderAnime(d.data, container, "Топ аниме по рейтингу"); })
+          .catch(function() { container.innerHTML = '<div class="status-text"><div class="icon">⚠️</div><p>Ошибка загрузки</p></div>'; });
+      }
+
+      function searchAnime() {
+        var q = document.getElementById("anime-input").value.trim();
+        if (!q) { loadTop(); return; }
+        var container = document.getElementById("anime-container");
+        container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+        fetch(API + "/anime?q=" + encodeURIComponent(q) + "&limit=20")
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            if (!d.data || !d.data.length) {
+              container.innerHTML = '<div class="status-text"><div class="icon">😕</div><p>Ничего не найдено по «' + q + '»</p></div>';
+              return;
+            }
+            renderAnime(d.data, container, 'Результаты по «' + q + '»');
+          })
+          .catch(function() { container.innerHTML = '<div class="status-text"><div class="icon">⚠️</div><p>Ошибка загрузки</p></div>'; });
+      }
+
+      function renderAnime(list, container, label) {
+        var html = '<p class="section-label">' + label + '</p>';
+        html += '<div class="anime-grid">';
+        list.forEach(function(a, i) {
+          var img = a.images && a.images.jpg ? a.images.jpg.large_image_url : "";
+          var score = a.score ? '<span class="anime-score">★ ' + a.score + '</span>' : "";
+          var title = a.title || "";
+          var eps = a.episodes ? a.episodes + " эп." : "";
+          html += '<div class="anime-card" onclick=\'openAnimeModal(' + JSON.stringify(a).replace(/'/g, "\\'") + ')\'>' +
+            (img ? '<img class="anime-poster" src="' + img + '" alt="" loading="lazy">' : '') +
+            '<div class="anime-info">' +
+              '<div class="anime-title">' + title + '</div>' +
+              '<div class="anime-meta"><span>' + (a.year || eps || "—") + '</span>' + score + '</div>' +
+            '</div></div>';
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      }
+
+      function openAnimeModal(a) {
+        var modal = document.getElementById("anime-modal");
+        var inner = document.getElementById("anime-modal-inner");
+        var img = a.images && a.images.jpg ? a.images.jpg.large_image_url : "";
+        var genres = a.genres ? a.genres.map(function(g) { return '<span class="tag tag-gold">' + g.name + '</span>'; }).join("") : "";
+        var score = a.score ? "★ " + a.score + " / 10" : "—";
+        var synopsis = a.synopsis || "Описание отсутствует.";
+        var statusMap = { "Finished Airing": "Завершён", "Currently Airing": "Выходит", "Not yet aired": "Анонс" };
+        var status = statusMap[a.status] || a.status || "—";
+
+        inner.innerHTML =
+          '<button class="modal-close" onclick="closeAnimeModal()">×</button>' +
+          (img ? '<div class="anime-modal-poster"><img src="' + img + '"></div>' : '') +
+          '<div class="anime-modal-details">' +
+            '<h2>' + (a.title || "Без названия") + '</h2>' +
+            '<div class="sub">' + (a.title_japanese || "") + (a.year ? " · " + a.year : "") + '</div>' +
+            '<div class="detail-row"><span class="label">Рейтинг</span><span class="anime-score">' + score + '</span></div>' +
+            '<div class="detail-row"><span class="label">Эпизоды</span><span>' + (a.episodes || "—") + '</span></div>' +
+            '<div class="detail-row"><span class="label">Статус</span><span>' + status + '</span></div>' +
+            '<div class="detail-row"><span class="label">Тип</span><span>' + (a.type || "—") + '</span></div>' +
+            '<div class="genres-list">' + genres + '</div>' +
+            '<p class="desc">' + synopsis + '</p>' +
+          '</div>';
+        modal.classList.add("active");
+      }
+
+      function closeAnimeModal() {
+        document.getElementById("anime-modal").classList.remove("active");
+      }
+
+      document.getElementById("anime-modal").addEventListener("click", function(e) {
+        if (e.target === document.getElementById("anime-modal")) closeAnimeModal();
+      });
+
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") closeAnimeModal();
+      });
+
+      loadTop();
+    </script>
+    <button class="scroll-top" id="scroll-top">&uarr;</button>
+    <script src="global.js"></script>
+  </body>
+</html>

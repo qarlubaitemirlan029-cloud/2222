@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>О проекте — CineVerse</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#e8b84b" />
+    <style>
+      .about-hero {
+        padding: 80px 0 60px;
+        text-align: center;
+      }
+      .about-hero h1 {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        margin-bottom: 12px;
+      }
+      .about-hero p {
+        color: var(--muted);
+        font-size: 1rem;
+        max-width: 600px;
+        margin: 0 auto 40px;
+        line-height: 1.7;
+      }
+      .about-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 48px;
+      }
+      .about-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 28px;
+        transition: all 0.3s;
+      }
+      .about-card:hover {
+        border-color: rgba(232, 184, 75, 0.3);
+        transform: translateY(-4px);
+      }
+      .about-card .icon {
+        font-size: 2rem;
+        margin-bottom: 14px;
+        display: block;
+      }
+      .about-card h3 {
+        font-size: 1.15rem;
+        margin-bottom: 8px;
+      }
+      .about-card p {
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.6;
+      }
+      .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 40px;
+      }
+      .tech-tag {
+        padding: 8px 18px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        font-size: 0.82rem;
+        color: var(--muted);
+        transition: all 0.2s;
+      }
+      .tech-tag:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .credits {
+        text-align: center;
+        padding: 60px 0;
+      }
+      .credits h2 {
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        margin-bottom: 16px;
+      }
+      .credits p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.7;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html" class="nav-logo">CINE<span>VERSE</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="kinopoisk.html">Кинопоиск</a></li>
+        <li><a href="minigames.html">Игры</a></li>
+        <li><a href="music.html">Музыка</a></li>
+        <li><a href="news.html">Новости</a></li>
+        <li><a href="weather.html">Погода</a></li>
+        <li><a href="anime.html">Аниме</a></li>
+        <li><a href="about.html" class="active">О проекте</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle"></button>
+      <button
+        class="burger"
+        id="burger"
+        onclick="
+          document.getElementById('burger').classList.toggle('active');
+          document.querySelector('.nav-links').classList.toggle('open');
+        "
+      >
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-auth" id="nav-auth"></div>
+    </nav>
+
+    <div id="auth-modal" class="modal-overlay">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 id="modal-title"></h2>
+        <p id="modal-sub"></p>
+        <div id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+      </div>
+    </div>
+
+    <main>
+      <section class="about-hero section">
+        <div class="container">
+          <span
+            class="tag tag-gold"
+            style="margin-bottom: 16px; display: inline-block"
+            >METU</span
+          >
+          <h1>О <span class="gold">ПРОЕКТЕ</span></h1>
+          <p>
+            CineVerse — многофункциональный веб-сайт, созданный как школьный
+            проект. Объединяет поиск фильмов, аниме, мини-игры, музыку, новости
+            и погоду в одном месте.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" style="padding-top: 0">
+        <div class="container">
+          <div class="about-grid">
+            <div class="about-card scroll-reveal">
+              <span class="icon">🎬</span>
+              <h3>Кинопоиск</h3>
+              <p>
+                Поиск фильмов по названию через Kinopoisk API. Рейтинги,
+                описания, постеры. Возможность добавлять фильмы в избранное.
+              </p>
+            </div>
+            <div class="about-card scroll-reveal">
+              <span class="icon">🎌</span>
+              <h3>Аниме</h3>
+              <p>
+                Поиск и просмотр информации об аниме через Jikan API. Топ
+                рейтинга, жанры, эпизоды и описания.
+              </p>
+            </div>
+            <div class="about-card scroll-reveal">
+              <span class="icon">🎮</span>
+              <h3>Мини-игры</h3>
+              <p>
+                Коллекция браузерных игр: 2048, Тетрис, Змейка, Hextris, Floppy
+                Bird и PROXX — играй прямо на сайте.
+              </p>
+            </div>
+            <div class="about-card scroll-reveal">
+              <span class="icon">🎵</span>
+              <h3>Музыка</h3>
+              <p>
+                Подборка Spotify-плейлистов разных жанров. Слушай прямо на сайте
+                через встроенный плеер.
+              </p>
+            </div>
+            <div class="about-card scroll-reveal">
+              <span class="icon">📰</span>
+              <h3>Новости</h3>
+              <p>
+                Актуальные новости из RSS-лент ведущих российских СМИ: Лента.ру,
+                РБК, РИА Новости.
+              </p>
+            </div>
+            <div class="about-card scroll-reveal">
+              <span class="icon">🌤️</span>
+              <h3>Погода</h3>
+              <p>
+                Прогноз погоды для любого города через wttr.in. Без ключей API,
+                быстро и просто.
+              </p>
+            </div>
+            <div class="about-card scroll-reveal">
+              <span class="icon">👤</span>
+              <h3>Авторизация</h3>
+              <p>
+                Вход через Google и VK с помощью OAuth 2.0.
+                Безопасная серверная авторизация через Passport.js.
+              </p>
+            </div>
+            <div class="about-card scroll-reveal">
+              <span class="icon">🌙</span>
+              <h3>Тёмная / светлая тема</h3>
+              <p>
+                Переключение темы с сохранением выбора. Тёмная тема по
+                умолчанию, оптимально для глаз.
+              </p>
+            </div>
+          </div>
+
+          <h2
+            style="
+              text-align: center;
+              margin-top: 64px;
+              font-size: clamp(1.5rem, 3vw, 2.5rem);
+            "
+          >
+            ТЕХНОЛОГИИ
+          </h2>
+          <div class="tech-stack">
+            <span class="tech-tag">HTML5</span>
+            <span class="tech-tag">CSS3</span>
+            <span class="tech-tag">JavaScript</span>
+            <span class="tech-tag">Kinopoisk API</span>
+            <span class="tech-tag">Jikan API</span>
+            <span class="tech-tag">Spotify Embed</span>
+            <span class="tech-tag">RSS2JSON</span>
+            <span class="tech-tag">wttr.in</span>
+            <span class="tech-tag">Node.js</span>
+            <span class="tech-tag">Express</span>
+            <span class="tech-tag">Passport.js</span>
+            <span class="tech-tag">OAuth 2.0</span>
+            <span class="tech-tag">Railway</span>
+            <span class="tech-tag">PWA</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="credits">
+        <div class="container">
+          <span
+            class="tag tag-red"
+            style="margin-bottom: 16px; display: inline-block"
+            >2026</span
+          >
+          <h2>СОЗДАТЕЛИ</h2>
+          <p>
+            Проект создан в рамках учебных целях. Дизайн, код и интеграция API —
+            всё сделано с нуля. Создатели сайта: [Бейсенов Нурбол, Карлыбай
+            Темирлан, Кулмурын Идирис]
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>&copy; 2025 CineVerse</div>
+      <div style="display: flex; gap: 20px">
+        <a href="kinopoisk.html">Кинопоиск</a>
+        <a href="anime.html">Аниме</a>
+        <a href="minigames.html">Игры</a>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <button class="scroll-top" id="scroll-top">&uarr;</button>
+    <script src="global.js"></script>
+  </body>
+</html>
