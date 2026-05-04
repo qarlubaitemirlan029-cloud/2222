@@ -22,9 +22,14 @@ app.use(
 );
 
 /* ===== Trust proxy (Railway) ===== */
-if (process.env.NODE_ENV === "production") {
+if (process.env.RAILWAY_PUBLIC_DOMAIN) {
   app.set("trust proxy", 1);
 }
+
+/* ===== Base URL ===== */
+var BASE_URL = process.env.RAILWAY_PUBLIC_DOMAIN
+  ? "https://" + process.env.RAILWAY_PUBLIC_DOMAIN
+  : "http://localhost:" + PORT;
 
 /* ===== Passport ===== */
 app.use(passport.initialize());
@@ -45,7 +50,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/auth/google/callback",
+        callbackURL: BASE_URL + "/auth/google/callback",
       },
       function (_accessToken, _refreshToken, profile, done) {
         done(null, {
@@ -81,7 +86,7 @@ if (process.env.VK_APP_ID && process.env.VK_APP_SECRET) {
       {
         clientID: process.env.VK_APP_ID,
         clientSecret: process.env.VK_APP_SECRET,
-        callbackURL: "/auth/vk/callback",
+        callbackURL: BASE_URL + "/auth/vk/callback",
         scope: ["email"],
         profileFields: ["email"],
       },
